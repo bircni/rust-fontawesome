@@ -1,0 +1,26 @@
+mod char {
+{%- for icon in icons %}
+    const {{ icon.ident }}: &str = "{{ icon.url }}";
+{%- endfor %}
+
+}
+/// The enum of Font Awesome icons.
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[non_exhaustive]
+pub enum Icon {
+{%- for icon in icons %}
+    /// {{ icon.ident }}
+    {{ icon.ident }},
+{%- endfor %}
+}
+
+impl Icon {
+    /// The url corresponding to the icon.
+    pub const fn url(self) -> &'static str {
+        match self {
+{%- for icon in icons %}
+            Self::{{ icon.ident }} => "{{ icon.url }}",
+{%- endfor %}
+        }
+    }
+}
