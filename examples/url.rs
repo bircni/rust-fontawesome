@@ -1,3 +1,5 @@
+use rust_fontawesome_icons::Icon;
+
 fn main() {
-    println!("Hello, world! {}", rust_fontawesome_icons::Icon::RUST.url());
+    println!("Hello, world! {}", Icon::RUST.url());
 }

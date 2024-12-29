@@ -3,18 +3,39 @@ name = "rust-fontawesome-icons"
 version = "0.1.0"
 edition = "2021"
 description = "Get all usable Font Awesome icons."
-repository = "https://github.com/bircni/"
+authors = ["bircni"]
+license = "MIT"
+repository = "https://github.com/bircni/rust-fontawesome"
+exclude = ["examples/*"]
 
 [features]
 default = ["std"]
 std = []
 
 [build-dependencies]
-anyhow = "1.0.86"
+anyhow = "1"
 convert_case = "0.6.0"
-reqwest = { version = "0.12.5", features = ["json"] }
-serde = { version = "1.0.203", features = ["derive"] }
+reqwest = { version = "0.12", features = ["json"] }
+serde = { version = "1", features = ["derive"] }
 tera = { version = "1.20.0", default-features = false }
-tokio = { version = "1.38.0", features = ["macros"] }
+tokio = { version = "1.42", features = ["macros"] }
 
-[dependencies]
+[dev-dependencies]
+eframe = "0.30"
+egui = "0.30"
+egui_extras = { version = "0.30", features = ["http", "svg"] }
+rust-fontawesome-icons = { path = "." }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+deprecated = "warn"
+
+[workspace.lints.clippy]
+restriction = "warn"
+complexity = "warn"
+correctness = "warn"
+nursery = "warn"
+pedantic = "warn"
+perf = "warn"
+style = "warn"
+suspicious = "warn"
