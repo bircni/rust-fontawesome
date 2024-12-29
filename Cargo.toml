@@ -2,11 +2,12 @@
 name = "rust-fontawesome-icons"
 version = "0.1.0"
 edition = "2021"
+repository = "https://github.com/bircni/rust-fontawesome"
 description = "Get all usable Font Awesome icons."
 authors = ["bircni"]
 license = "MIT"
-repository = "https://github.com/bircni/rust-fontawesome"
 exclude = ["examples/*"]
+keywords = ["font-awesome", "icons", "url"]
 
 [features]
 default = ["std"]
