@@ -4,7 +4,7 @@ use serde::Serialize;
 use std::{env, fs::File, path::PathBuf};
 use tera::Tera;
 
-const FA_VERSION: &str = "6.5.2";
+const FA_VERSION: &str = "6.7.2";
 
 mod api {
     use anyhow::Result;

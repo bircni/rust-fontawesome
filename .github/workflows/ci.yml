@@ -1,26 +1,73 @@
-name: "CI"
+name: CI
 
 on:
   push:
     branches:
       - main
+    tags:
+      - "*"
   pull_request:
     branches:
       - main
 
 jobs:
-  cargo:
-    runs-on: "ubuntu-latest"
+  ci:
+    name: CI on ${{ matrix.os }}
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [ubuntu-24.04, windows-latest, macos-latest]
+
     steps:
-      - uses: "actions/checkout@v4"
-      - uses: "dtolnay/rust-toolchain@stable"
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@master
+
+      - name: cargo build
+        run: cargo build
+
+      - name: cargo fmt
+        run: cargo fmt --all -- --check
+
+      - name: cargo clippy
+        run: cargo clippy -- -D warnings
+
+      - name: cargo test
+        run: cargo test
+
+  cargo-deny:
+    strategy:
+      fail-fast: false
+
+    name: cargo-deny
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: EmbarkStudios/cargo-deny-action@main
         with:
-          components: "clippy, rustfmt"
-      - name: "Build"
-        run: "cargo build --all-features"
-      - name: "Check formatting"
-        run: "cargo fmt --check"
-      - name: "Lint"
-        run: "cargo clippy --all-features -- -D warnings"
-      - name: "Generate documentation"
-        run: "cargo doc --no-deps --all-features"
+          rust-version: "1.83.0"
+          log-level: error
+          command: check
+
+  publish-check:
+    name: Publish Check
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@master
+      - run: cargo fetch
+      - name: cargo publish
+        run: cargo publish --dry-run
+
+  typos:
+    name: Typos
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: crate-ci/typos@master
+
+  cargo-machete:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Machete
+        uses: bnjbvr/cargo-machete@main
