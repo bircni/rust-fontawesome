@@ -11,19 +11,33 @@ on:
       - main
 
 jobs:
-  ci:
-    name: CI on ${{ matrix.os }}
-    runs-on: ${{matrix.os}}
-    strategy:
-      matrix:
-        os: [ubuntu-24.04, windows-latest, macos-latest]
-
+  build:
+    name: Build
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: Swatinem/rust-cache@master
+        with:
+          lfs: true
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.85
+      - uses: Swatinem/rust-cache@v2
 
       - name: cargo build
         run: cargo build
+
+  check:
+    name: Check
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.85
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
 
       - name: cargo fmt
         run: cargo fmt --all -- --check
@@ -39,35 +53,42 @@ jobs:
       fail-fast: false
 
     name: cargo-deny
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - uses: EmbarkStudios/cargo-deny-action@main
+      - uses: EmbarkStudios/cargo-deny-action@v1
         with:
-          rust-version: "1.83.0"
+          rust-version: "1.85.0"
           log-level: error
           command: check
 
   publish-check:
     name: Publish Check
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     steps:
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.85
       - uses: actions/checkout@v4
-      - uses: Swatinem/rust-cache@master
+      - uses: Swatinem/rust-cache@v2
       - run: cargo fetch
       - name: cargo publish
         run: cargo publish --dry-run
 
   typos:
     name: Typos
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: crate-ci/typos@master
 
   cargo-machete:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.85
+      - uses: Swatinem/rust-cache@v2
       - uses: actions/checkout@v4
       - name: Machete
         uses: bnjbvr/cargo-machete@main
