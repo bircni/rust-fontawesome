@@ -1,6 +1,6 @@
 [package]
 name = "rust-fontawesome-icons"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 repository = "https://github.com/bircni/rust-fontawesome"
 description = "Get all usable Font Awesome icons."
